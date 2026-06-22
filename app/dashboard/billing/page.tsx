@@ -1,0 +1,26 @@
+'use client'
+
+import { useEffect, useState } from 'react'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { CreditCard, Download, Loader2 } from 'lucide-react'
+import { backendApi, getApiError } from '@/lib/api'
+import toast from 'react-hot-toast'
+
+type Subscription = { plan?: string; subscriptionStatus?: string; trialExpired?: boolean; trialDaysRemaining?: number | null; trialEndsAt?: string; usage?: { users?: number; aiMessages?: number; documents?: number } }
+type Payment = { _id: string; amount: number; currency: string; status: string; paidAt?: string; createdAt?: string; hostedInvoiceUrl?: string }
+
+export default function BillingPage() {
+  const [subscription,setSubscription]=useState<Subscription>()
+  const [payments,setPayments]=useState<Payment[]>([])
+  const [loading,setLoading]=useState(true)
+  const [processing,setProcessing]=useState(false)
+  useEffect(()=>{ Promise.all([backendApi.subscription(),backendApi.payments()]).then(([s,p])=>{setSubscription(s.data.data);setPayments(p.data.data)}).catch(e=>toast.error(getApiError(e,'Could not load billing'))).finally(()=>setLoading(false)) },[])
+  const loadCheckout=()=>new Promise<void>((resolve,reject)=>{if((window as any).Razorpay)return resolve();const script=document.createElement('script');script.src='https://checkout.razorpay.com/v1/checkout.js';script.onload=()=>resolve();script.onerror=()=>reject(new Error('Could not load Razorpay Checkout'));document.head.appendChild(script)})
+  const checkout=async(plan:'pro'|'business')=>{setProcessing(true);try{await loadCheckout();const config=(await backendApi.createSubscription(plan)).data.data;const razorpay=new (window as any).Razorpay({key:config.keyId,subscription_id:config.subscriptionId,name:config.name,description:config.description,theme:{color:'#2563eb'},modal:{ondismiss:()=>setProcessing(false)},handler:async(response:{razorpay_payment_id:string;razorpay_subscription_id:string;razorpay_signature:string})=>{try{await backendApi.verifyPayment(response);const [s,p]=await Promise.all([backendApi.subscription(),backendApi.payments()]);setSubscription(s.data.data);setPayments(p.data.data);toast.success('Subscription activated')}catch(error){toast.error(getApiError(error,'Payment verification failed'))}finally{setProcessing(false)}}});razorpay.on('payment.failed',(response:any)=>{toast.error(response.error?.description||'Payment failed');setProcessing(false)});razorpay.open()}catch(e){toast.error(getApiError(e,'Checkout is unavailable'));setProcessing(false)}}
+  if(loading)return <div className="flex justify-center p-16"><Loader2 className="animate-spin"/></div>
+  return <div className="max-w-4xl space-y-8"><div><h1 className="text-3xl font-bold">Billing</h1><p className="text-muted-foreground">Subscriptions and payments powered by Razorpay</p></div>
+    <Card><CardHeader><CardTitle className="capitalize">{subscription?.plan || 'Free'} plan</CardTitle><CardDescription>{subscription?.plan === 'free' ? (subscription.trialExpired ? 'Your 7-day free trial has ended' : `${subscription.trialDaysRemaining ?? 0} day${subscription.trialDaysRemaining === 1 ? '' : 's'} remaining in your free trial`) : `Status: ${subscription?.subscriptionStatus || 'none'}`}</CardDescription></CardHeader><CardContent><div className="flex flex-wrap gap-3"><Button disabled={processing} onClick={()=>checkout('pro')}>{processing?'Opening checkout...':'Upgrade to Pro'}</Button><Button disabled={processing} variant="outline" onClick={()=>checkout('business')}>Choose Business</Button></div><div className="mt-6 grid gap-3 sm:grid-cols-3">{Object.entries(subscription?.usage||{}).map(([key,value])=><div key={key} className="rounded-lg bg-muted p-4"><div className="text-2xl font-bold">{value}</div><div className="text-sm capitalize text-muted-foreground">{key}</div></div>)}</div></CardContent></Card>
+    <Card><CardHeader><CardTitle className="flex items-center gap-2"><CreditCard className="h-5 w-5"/>Payment history</CardTitle><CardDescription>Payments verified by the backend and Razorpay webhooks</CardDescription></CardHeader><CardContent>{payments.length===0?<p className="py-8 text-center text-muted-foreground">No payments recorded yet.</p>:<div className="overflow-x-auto"><table className="w-full text-sm"><thead><tr className="border-b"><th className="p-3 text-left">Date</th><th className="p-3 text-left">Amount</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Invoice</th></tr></thead><tbody>{payments.map(payment=><tr key={payment._id} className="border-b"><td className="p-3">{new Date(payment.paidAt||payment.createdAt||Date.now()).toLocaleDateString()}</td><td className="p-3 font-medium">{new Intl.NumberFormat(undefined,{style:'currency',currency:(payment.currency||'INR').toUpperCase()}).format(payment.amount/100)}</td><td className="p-3 capitalize">{payment.status}</td><td className="p-3">{payment.hostedInvoiceUrl?<Button variant="ghost" size="sm" onClick={()=>window.open(payment.hostedInvoiceUrl,'_blank')}><Download className="mr-2 h-4 w-4"/>Open</Button>:'—'}</td></tr>)}</tbody></table></div>}</CardContent></Card>
+  </div>
+}

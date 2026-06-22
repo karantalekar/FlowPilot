@@ -1,0 +1,108 @@
+{
+  "common": {
+    "welcome": "Welcome",
+    "logout": "Logout",
+    "settings": "Settings",
+    "profile": "Profile",
+    "dashboard": "Dashboard",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "add": "Add",
+    "create": "Create",
+    "update": "Update",
+    "back": "Back"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome_message": "Welcome back! Here's your business overview",
+    "new_project": "New Project",
+    "total_leads": "Total Leads",
+    "active_projects": "Active Projects",
+    "revenue": "Revenue",
+    "tasks_completed": "Tasks Completed",
+    "recent_activity": "Recent Activity"
+  },
+  "crm": {
+    "title": "CRM",
+    "subtitle": "Manage your leads and customer relationships",
+    "all_leads": "All Leads",
+    "new_lead": "New Lead",
+    "companies": "Companies",
+    "contact": "Contact",
+    "phone": "Phone",
+    "status": "Status",
+    "value": "Value",
+    "actions": "Actions"
+  },
+  "projects": {
+    "title": "Projects",
+    "subtitle": "Organize and track your project tasks",
+    "new_project": "New Project",
+    "current_project": "Current Project",
+    "archive": "Archive",
+    "todo": "To Do",
+    "in_progress": "In Progress",
+    "review": "Review",
+    "done": "Done"
+  },
+  "ai": {
+    "title": "AI Assistant",
+    "subtitle": "Get intelligent insights and automation suggestions",
+    "chat": "Chat with FlowPilot AI",
+    "ask_anything": "Ask questions about your leads, projects, and team",
+    "quick_actions": "Quick Actions"
+  },
+  "team": {
+    "title": "Team Members",
+    "subtitle": "Manage your team and permissions",
+    "invite_member": "Invite Member",
+    "active_team": "Active Team",
+    "member": "Member",
+    "email": "Email",
+    "role": "Role",
+    "status": "Status",
+    "pending_invitations": "Pending Invitations"
+  },
+  "billing": {
+    "title": "Billing",
+    "subtitle": "Manage your subscription and billing information",
+    "current_plan": "Current Plan",
+    "professional": "Professional",
+    "change_plan": "Change Plan",
+    "cancel_subscription": "Cancel Subscription",
+    "billing_address": "Billing Address",
+    "payment_method": "Payment Method",
+    "invoice_history": "Invoice History",
+    "usage_quota": "Usage & Quota"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account and preferences",
+    "profile": "Profile",
+    "preferences": "Preferences",
+    "security": "Security",
+    "billing": "Billing",
+    "full_name": "Full Name",
+    "email": "Email",
+    "company": "Company",
+    "language": "Language",
+    "theme": "Theme",
+    "notifications": "Notifications"
+  },
+  "auth": {
+    "welcome": "Welcome to FlowPilot",
+    "sign_in": "Sign in to your account to continue",
+    "sign_up": "Create Account",
+    "join": "Join FlowPilot and start managing your business",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Confirm Password",
+    "forgot_password": "Forgot password?",
+    "sign_in_button": "Sign in",
+    "sign_up_button": "Create account",
+    "have_account": "Already have an account?",
+    "no_account": "Don't have an account?"
+  }
+}

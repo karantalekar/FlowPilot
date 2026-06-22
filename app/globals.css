@@ -1,0 +1,303 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import 'shadcn/tailwind.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-heading: var(--font-sans);
+  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "Cascadia Code", "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-foreground: var(--foreground);
+  --color-background: var(--background);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+:root {
+  color-scheme: light;
+  /* Pastel Background */
+  --background: #FAFAF8;
+  --foreground: #1a1a1a;
+  
+  /* Cards */
+  --card: #FFFFFF;
+  --card-foreground: #1a1a1a;
+  
+  /* Popover */
+  --popover: #FFFFFF;
+  --popover-foreground: #1a1a1a;
+  
+  /* Primary - Lavender */
+  --primary: #C4B5FD;
+  --primary-foreground: #2d1b4e;
+  
+  /* Secondary - Sage Green */
+  --secondary: #BBF7D0;
+  --secondary-foreground: #1a3a2a;
+  
+  /* Muted - Soft Cream */
+  --muted: #FFFDF7;
+  --muted-foreground: #6b6b5b;
+  
+  /* Accent - Peach */
+  --accent: #FED7AA;
+  --accent-foreground: #3d2817;
+  
+  /* Destructive - Soft Coral */
+  --destructive: #FECACA;
+  
+  /* Borders */
+  --border: #E7E5E4;
+  --input: #E7E5E4;
+  --ring: #DDD6FE;
+  
+  /* Charts - Pastel gradients */
+  --chart-1: #C4B5FD;
+  --chart-2: #BBF7D0;
+  --chart-3: #FED7AA;
+  --chart-4: #FECACA;
+  --chart-5: #FBCFE8;
+  
+  --radius: 0.75rem;
+  
+  /* Sidebar */
+  --sidebar: #FAFAF8;
+  --sidebar-foreground: #1a1a1a;
+  --sidebar-primary: #C4B5FD;
+  --sidebar-primary-foreground: #2d1b4e;
+  --sidebar-accent: #BBF7D0;
+  --sidebar-accent-foreground: #1a3a2a;
+  --sidebar-border: #E7E5E4;
+  --sidebar-ring: #DDD6FE;
+}
+
+.dark {
+  color-scheme: dark;
+  /* Dark Pastel Background */
+  --background: #121212;
+  --foreground: #f5f5f5;
+  
+  /* Dark Cards */
+  --card: #27272A;
+  --card-foreground: #f5f5f5;
+  
+  /* Dark Popover */
+  --popover: #27272A;
+  --popover-foreground: #f5f5f5;
+  
+  /* Dark Primary - Muted Lavender */
+  --primary: #a89fd9;
+  --primary-foreground: #f5f5f5;
+  
+  /* Dark Secondary - Soft Sage */
+  --secondary: #7dd3a8;
+  --secondary-foreground: #121212;
+  
+  /* Dark Muted */
+  --muted: #3a3a3f;
+  --muted-foreground: #b0b0b0;
+  
+  /* Dark Accent - Dusty Rose */
+  --accent: #d9a8a8;
+  --accent-foreground: #f5f5f5;
+  
+  /* Dark Destructive */
+  --destructive: #d97777;
+  
+  /* Dark Borders */
+  --border: #3a3a3f;
+  --input: #3a3a3f;
+  --ring: #7dd3a8;
+  
+  /* Dark Charts */
+  --chart-1: #a89fd9;
+  --chart-2: #7dd3a8;
+  --chart-3: #d9c59a;
+  --chart-4: #d9a8a8;
+  --chart-5: #d5a9c9;
+  
+  /* Dark Sidebar */
+  --sidebar: #1F1F23;
+  --sidebar-foreground: #f5f5f5;
+  --sidebar-primary: #a89fd9;
+  --sidebar-primary-foreground: #121212;
+  --sidebar-accent: #7dd3a8;
+  --sidebar-accent-foreground: #121212;
+  --sidebar-border: #3a3a3f;
+  --sidebar-ring: #7dd3a8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+    --background: #121212;
+    --foreground: #f5f5f5;
+    --card: #27272A;
+    --card-foreground: #f5f5f5;
+    --popover: #27272A;
+    --popover-foreground: #f5f5f5;
+    --primary: #a89fd9;
+    --primary-foreground: #f5f5f5;
+    --secondary: #7dd3a8;
+    --secondary-foreground: #121212;
+    --muted: #3a3a3f;
+    --muted-foreground: #b0b0b0;
+    --accent: #d9a8a8;
+    --accent-foreground: #f5f5f5;
+    --destructive: #d97777;
+    --border: #3a3a3f;
+    --input: #3a3a3f;
+    --ring: #7dd3a8;
+    --chart-1: #a89fd9;
+    --chart-2: #7dd3a8;
+    --chart-3: #d9c59a;
+    --chart-4: #d9a8a8;
+    --chart-5: #d5a9c9;
+    --sidebar: #1F1F23;
+    --sidebar-foreground: #f5f5f5;
+    --sidebar-primary: #a89fd9;
+    --sidebar-primary-foreground: #121212;
+    --sidebar-accent: #7dd3a8;
+    --sidebar-accent-foreground: #121212;
+    --sidebar-border: #3a3a3f;
+    --sidebar-ring: #7dd3a8;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+/* Smooth grain texture */
+@layer base {
+  html {
+    background-image: 
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' seed='2' /%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23noiseFilter)' opacity='0.02'/%3E%3C/svg%3E");
+  }
+}
+
+/* Glassmorphism effect */
+.glass {
+  @apply bg-white/30 backdrop-blur-md border border-white/20;
+}
+
+.dark .glass {
+  @apply bg-white/10 backdrop-blur-md border border-white/20;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Gradient text animation */
+@keyframes gradient-shift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-text {
+  background-size: 200% 200%;
+  animation: gradient-shift 3s ease infinite;
+}
+
+/* Warm, playful canvas for the public landing page. */
+.landing-shell {
+  background-color: #fff8f1;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgb(216 180 254 / 0.52) 0, transparent 27rem),
+    radial-gradient(circle at 92% 18%, rgb(253 186 116 / 0.48) 0, transparent 28rem),
+    radial-gradient(circle at 48% 72%, rgb(167 243 208 / 0.34) 0, transparent 32rem),
+    linear-gradient(145deg, #fff7ed 0%, #fdf2f8 46%, #f5f3ff 72%, #ecfdf5 100%);
+  background-attachment: fixed;
+}
+
+.footer-gradient {
+  background-image: linear-gradient(100deg, #f3e8ff 0%, #ffedd5 45%, #fce7f3 70%, #d1fae5 100%);
+}
+
+.dark .landing-shell {
+  --background: #120f1d;
+  --foreground: #f8fafc;
+  --primary: #c4b5fd;
+  --primary-foreground: #24163d;
+  --accent: #fdba74;
+  --accent-foreground: #431407;
+  --secondary: #6ee7b7;
+  --secondary-foreground: #052e26;
+  background-color: #120f1d;
+  background-image:
+    radial-gradient(circle at 8% 12%, rgb(109 40 217 / 0.28) 0, transparent 28rem),
+    radial-gradient(circle at 92% 18%, rgb(194 65 12 / 0.20) 0, transparent 30rem),
+    radial-gradient(circle at 48% 72%, rgb(5 150 105 / 0.15) 0, transparent 34rem),
+    linear-gradient(145deg, #120f1d 0%, #1d1426 48%, #111827 100%);
+}
+
+.dark .footer-gradient {
+  background-image: linear-gradient(100deg, #1e1530 0%, #271a1e 48%, #10251f 100%);
+}

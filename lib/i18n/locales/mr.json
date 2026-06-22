@@ -1,0 +1,108 @@
+{
+  "common": {
+    "welcome": "स्वागत आहे",
+    "logout": "लॉगआउट",
+    "settings": "सेटिंग्स",
+    "profile": "प्रोफाइल",
+    "dashboard": "डॅशबोर्ड",
+    "save": "जतन करा",
+    "cancel": "रद्द करा",
+    "delete": "हटवा",
+    "edit": "संपादित करा",
+    "add": "जोडा",
+    "create": "तयार करा",
+    "update": "अपडेट करा",
+    "back": "परत"
+  },
+  "dashboard": {
+    "title": "डॅशबोर्ड",
+    "welcome_message": "स्वागत आहे! येथे आपले व्यवसाय विहंगावलोकन आहे",
+    "new_project": "नवीन प्रकल्प",
+    "total_leads": "एकूण लीड्स",
+    "active_projects": "सक्रिय प्रकल्प",
+    "revenue": "महसूल",
+    "tasks_completed": "पूर्ण केलेली कार्ये",
+    "recent_activity": "हालची क्रिया"
+  },
+  "crm": {
+    "title": "सीआरएम",
+    "subtitle": "आपल्या लीड्स आणि ग्राहक संबंध व्यवस्थापित करा",
+    "all_leads": "सर्व लीड्स",
+    "new_lead": "नवीन लीड",
+    "companies": "कंपन्या",
+    "contact": "संपर्क",
+    "phone": "फोन",
+    "status": "स्थिती",
+    "value": "मूल्य",
+    "actions": "क्रिया"
+  },
+  "projects": {
+    "title": "प्रकल्प",
+    "subtitle": "आपल्या प्रकल्पाच्या कार्यांचे आयोजन आणि ट्रॅक करा",
+    "new_project": "नवीन प्रकल्प",
+    "current_project": "वर्तमान प्रकल्प",
+    "archive": "संग्रह",
+    "todo": "करायचे",
+    "in_progress": "प्रगतीमध्ये",
+    "review": "पुनरावलोकन",
+    "done": "पूर्ण"
+  },
+  "ai": {
+    "title": "एआই सहायक",
+    "subtitle": "बुद्धिमान अंतर्दृष्टी आणि स्वयंचलन सुझाव मिळवा",
+    "chat": "FlowPilot एआय सह चॅट करा",
+    "ask_anything": "आपल्या लीड्स, प्रकल्प आणि टीम बद्दल प्रश्न विचारा",
+    "quick_actions": "त्वरित क्रिया"
+  },
+  "team": {
+    "title": "टीम सदस्य",
+    "subtitle": "आपल्या टीम आणि परवानग्या व्यवस्थापित करा",
+    "invite_member": "सदस्य आमंत्रित करा",
+    "active_team": "सक्रिय टीम",
+    "member": "सदस्य",
+    "email": "ईमेल",
+    "role": "भूमिका",
+    "status": "स्थिती",
+    "pending_invitations": "प्रलंबित आमंत्रण"
+  },
+  "billing": {
+    "title": "बिलिंग",
+    "subtitle": "आपली सदस्यता आणि बिलिंग माहिती व्यवस्थापित करा",
+    "current_plan": "वर्तमान योजना",
+    "professional": "व्यावसायिक",
+    "change_plan": "योजना बदला",
+    "cancel_subscription": "सदस्यता रद्द करा",
+    "billing_address": "बिलिंग पत्ता",
+    "payment_method": "पेमेंट पद्धत",
+    "invoice_history": "चलन इतिहास",
+    "usage_quota": "वापर आणि कोटा"
+  },
+  "settings": {
+    "title": "सेटिंग्स",
+    "subtitle": "आपले खाते आणि प्राधान्ये व्यवस्थापित करा",
+    "profile": "प्रोफाइल",
+    "preferences": "पसंती",
+    "security": "सुरक्षा",
+    "billing": "बिलिंग",
+    "full_name": "पूर्ण नाव",
+    "email": "ईमेल",
+    "company": "कंपनी",
+    "language": "भाषा",
+    "theme": "थीम",
+    "notifications": "सूचना"
+  },
+  "auth": {
+    "welcome": "FlowPilot मध्ये स्वागत आहे",
+    "sign_in": "सुरू ठेवण्यासाठी आपल्या खात्यात साइन इन करा",
+    "sign_up": "खाता तयार करा",
+    "join": "FlowPilot मध्ये सामील व्हा आणि आपल्या व्यवसायाचे व्यवस्थापन करण्यास सुरवात करा",
+    "email": "ईमेल",
+    "password": "पासवर्ड",
+    "confirm_password": "पासवर्डची पुष्टी करा",
+    "forgot_password": "पासवर्ड विसरले?",
+    "sign_in_button": "साइन इन करा",
+    "sign_up_button": "खाता तयार करा",
+    "have_account": "आधीपासून खाते आहे?",
+    "no_account": "खाते नाही?"
+  }
+}

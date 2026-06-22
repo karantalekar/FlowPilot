@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.github
+.env*
+!.env.example
+FlowPilot-BE/node_modules
+FlowPilot-BE/.env
+FlowPilot-BE/logs
+FlowPilot-BE/uploads
+coverage
+*.log
