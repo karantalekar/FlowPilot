@@ -23,7 +23,6 @@ export default function TeamPage() {
   const [inviteEmail, setInviteEmail] = useState('')
   const [inviteName, setInviteName] = useState('')
   const [inviteRole, setInviteRole] = useState<EditableRole>('employee')
-  const [developmentInviteUrl, setDevelopmentInviteUrl] = useState('')
   const [inviting, setInviting] = useState(false)
   const [editingMember, setEditingMember] = useState<EditingMember>()
   const [savingMember, setSavingMember] = useState(false)
@@ -42,7 +41,6 @@ export default function TeamPage() {
     setInviting(true)
     try {
       const result = (await backendApi.inviteMember({ name: inviteName.trim(), email: inviteEmail.trim(), role: inviteRole })).data.data
-      setDevelopmentInviteUrl(result.emailSent ? '' : result.inviteUrl || '')
       setInviteEmail('')
       setInviteName('')
       setShowInviteForm(false)
@@ -101,8 +99,6 @@ export default function TeamPage() {
       </div>
 
       {showInviteForm && <Card className="border-primary/50 bg-primary/5"><CardHeader><CardTitle>Invite Team Member</CardTitle><CardDescription>{currentRole === 'manager' ? 'Managers can invite Employees only.' : 'Invite an Employee, Manager, or Admin.'}</CardDescription></CardHeader><CardContent><form onSubmit={handleInvite} className="grid gap-4 md:grid-cols-3"><input required minLength={2} value={inviteName} onChange={event => setInviteName(event.target.value)} placeholder="Full name" className="rounded-lg border bg-background px-4 py-2"/><input required type="email" value={inviteEmail} onChange={event => setInviteEmail(event.target.value)} placeholder="colleague@example.com" className="rounded-lg border bg-background px-4 py-2"/><select value={inviteRole} onChange={event => setInviteRole(event.target.value as EditableRole)} disabled={currentRole === 'manager'} className="rounded-lg border bg-background px-4 py-2"><option value="employee">Employee</option>{currentRole !== 'manager' && <><option value="manager">Manager</option><option value="admin">Admin</option></>}</select><div className="flex gap-2 md:col-span-3"><Button type="submit" disabled={inviting}>{inviting ? 'Sending...' : 'Send Invite'}</Button><Button type="button" variant="outline" onClick={() => setShowInviteForm(false)}>Cancel</Button></div></form></CardContent></Card>}
-
-      {developmentInviteUrl && <Card className="border-amber-300 bg-amber-50 text-slate-900"><CardContent className="pt-6"><p className="font-medium">Development invitation link</p><p className="mb-3 text-sm text-slate-600">Email was not sent, so share this link with the invited user.</p><div className="flex gap-2"><input readOnly value={developmentInviteUrl} className="min-w-0 flex-1 rounded border bg-white px-3 py-2 text-sm"/><Button onClick={() => navigator.clipboard.writeText(developmentInviteUrl)}>Copy</Button></div></CardContent></Card>}
 
       {editingMember && <Card className="border-primary/50"><CardHeader><CardTitle>Edit Team Member</CardTitle><CardDescription>Update this Manager or Employee&apos;s information.</CardDescription></CardHeader><CardContent><form onSubmit={saveMember} className="grid gap-4 md:grid-cols-3"><div className="space-y-2"><label htmlFor="member-name" className="text-sm font-medium">Full name</label><input id="member-name" required minLength={2} value={editingMember.name} onChange={event => setEditingMember({...editingMember, name: event.target.value})} className="w-full rounded-lg border bg-background px-4 py-2"/></div><div className="space-y-2"><label htmlFor="member-email" className="text-sm font-medium">Email</label><input id="member-email" required type="email" value={editingMember.email} onChange={event => setEditingMember({...editingMember, email: event.target.value})} className="w-full rounded-lg border bg-background px-4 py-2"/></div><div className="space-y-2"><label htmlFor="member-role" className="text-sm font-medium">Role</label><select id="member-role" value={editingMember.role} onChange={event => setEditingMember({...editingMember, role: event.target.value as EditableRole})} className="w-full rounded-lg border bg-background px-4 py-2"><option value="employee">Employee</option><option value="manager">Manager</option><option value="admin">Admin</option></select></div><div className="flex flex-wrap gap-2 md:col-span-3"><Button type="submit" disabled={savingMember}>{savingMember ? 'Saving...' : 'Save changes'}</Button><Button type="button" variant="outline" onClick={() => setEditingMember(undefined)}>Cancel</Button><Button type="button" variant="destructive" onClick={() => setRemoveMemberId(editingMember.id)}><Trash2 className="mr-2 h-4 w-4"/>Remove member</Button></div></form></CardContent></Card>}
 

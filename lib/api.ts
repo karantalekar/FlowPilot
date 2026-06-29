@@ -1,6 +1,38 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
 
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://flowpilot-be.onrender.com/api/v1'
+function unique(values: string[]) {
+  return Array.from(new Set(values))
+}
+
+function resolveApiBaseUrls() {
+  const configuredBaseUrl = (process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL)?.trim()
+  if (configuredBaseUrl) return [configuredBaseUrl.replace(/\/$/, '')]
+
+  if (typeof window === 'undefined') return ['http://localhost:5000/api/v1']
+
+  const { hostname } = window.location
+  if (hostname === 'localhost') {
+    return [
+      'http://127.0.0.1:5000/api/v1',
+      'http://localhost:5000/api/v1',
+    ]
+  }
+
+  return unique([
+    `http://${hostname}:5000/api/v1`,
+    'http://127.0.0.1:5000/api/v1',
+    'http://localhost:5000/api/v1',
+  ])
+}
+
+const API_BASE_URLS = resolveApiBaseUrls()
+
+function getNextApiBaseUrl(current?: string) {
+  const currentIndex = API_BASE_URLS.indexOf(current || API_BASE_URL)
+  return API_BASE_URLS[currentIndex + 1]
+}
+
+export const API_BASE_URL = API_BASE_URLS[0]
 
 export interface ApiEnvelope<T> {
   success: boolean
@@ -63,13 +95,23 @@ let refreshRequest: Promise<string> | null = null
 api.interceptors.response.use(
   (response) => response,
   async (error: AxiosError) => {
-    const original = error.config as (InternalAxiosRequestConfig & { _retry?: boolean }) | undefined
+    const original = error.config as (InternalAxiosRequestConfig & { _retry?: boolean; _apiBaseUrl?: string }) | undefined
     const refreshToken = tokenStore.refresh()
+
+    if (!error.response && original) {
+      const nextBaseUrl = getNextApiBaseUrl(original._apiBaseUrl || original.baseURL)
+
+      if (nextBaseUrl) {
+        original._apiBaseUrl = nextBaseUrl
+        original.baseURL = nextBaseUrl
+        return api(original)
+      }
+    }
 
     if (error.response?.status === 401 && original && !original._retry && refreshToken && !original.url?.includes('/auth/refresh-token')) {
       original._retry = true
       refreshRequest ??= axios
-        .post<ApiEnvelope<{ accessToken: string; refreshToken: string }>>(`${API_BASE_URL}/auth/refresh-token`, { refreshToken })
+        .post<ApiEnvelope<{ accessToken: string; refreshToken: string }>>(`${original.baseURL || API_BASE_URL}/auth/refresh-token`, { refreshToken })
         .then(({ data }) => {
           tokenStore.save(data.data.accessToken, data.data.refreshToken)
           return data.data.accessToken
@@ -96,7 +138,7 @@ api.interceptors.response.use(
 export function getApiError(error: unknown, fallback = 'Something went wrong') {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { message?: string; error?: { message?: string } } | undefined
-    if (!error.response) return `Cannot reach the backend at ${API_BASE_URL}`
+    if (!error.response) return `Cannot reach the local backend at ${API_BASE_URLS.join(' or ')}`
     return data?.message || data?.error?.message || error.message || fallback
   }
   return error instanceof Error ? error.message : fallback

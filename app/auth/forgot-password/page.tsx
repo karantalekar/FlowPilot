@@ -37,7 +37,7 @@ export default function ForgotPasswordPage() {
         <h1 className="text-3xl font-bold text-foreground">Reset your password</h1>
         <p className="text-muted-foreground">
           {submitted
-            ? 'Check your email for a password reset link'
+            ? 'Check your email for a password reset link. It expires in 30 minutes.'
             : 'Enter your email address and we&apos;ll send you instructions to reset your password'}
         </p>
       </div>
@@ -80,7 +80,7 @@ export default function ForgotPasswordPage() {
       ) : (
         <div className="space-y-4 p-4 bg-green-50 dark:bg-green-950 rounded-lg border border-green-200 dark:border-green-800">
           <p className="text-sm text-green-800 dark:text-green-200">
-            If an account exists with this email, you&apos;ll receive a password reset link shortly.
+            If an account exists with this email, you&apos;ll receive a password reset link shortly. The link expires in 30 minutes.
           </p>
           <p className="text-xs text-green-700 dark:text-green-300">
             Didn&apos;t receive an email? Check your spam folder or try another email address.

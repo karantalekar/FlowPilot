@@ -84,7 +84,7 @@ export function Sidebar() {
           {/* Logo */}
           <Link href="/" className="mb-7 mt-3 flex items-center gap-2">
             <Image src="/favicon.png" alt="FlowPilot logo" width={68} height={68} priority className="h-[68px] w-[68px] shrink-0 object-contain" />
-            <span className="text-xl font-bold tracking-tight text-sidebar-foreground">FlowPilot</span>
+            <span className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-orange-500 bg-clip-text text-2xl font-bold tracking-tight text-transparent">FlowPilot</span>
           </Link>
 
           {/* Navigation */}

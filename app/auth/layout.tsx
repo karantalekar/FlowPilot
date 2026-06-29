@@ -11,7 +11,7 @@ export default function AuthLayout({
       <div className="w-full max-w-md">
         <Link href="/" className="mb-6 flex items-center justify-center gap-3">
           <Image src="/favicon.png" alt="FlowPilot logo" width={72} height={72} priority className="h-[72px] w-[72px] object-contain" />
-          <span className="text-2xl font-bold text-foreground">FlowPilot</span>
+          <span className="bg-gradient-to-r from-violet-600 via-fuchsia-600 to-orange-500 bg-clip-text text-2xl font-bold text-transparent">FlowPilot</span>
         </Link>
         {children}
       </div>
