@@ -67,7 +67,7 @@ export interface AIUsage {
 const api = axios.create({
   baseURL: API_BASE_URL,
   headers: { 'Content-Type': 'application/json' },
-  timeout: 15000,
+  timeout: 45000,
 })
 
 const tokenStore = {
@@ -138,6 +138,7 @@ api.interceptors.response.use(
 export function getApiError(error: unknown, fallback = 'Something went wrong') {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { message?: string; error?: { message?: string } } | undefined
+    if (error.code === 'ECONNABORTED') return 'The backend took too long to respond. Please try again.'
     if (!error.response) return `Cannot reach the backend at ${API_BASE_URLS.join(' or ')}`
     return data?.message || data?.error?.message || error.message || fallback
   }
