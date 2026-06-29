@@ -138,7 +138,7 @@ api.interceptors.response.use(
 export function getApiError(error: unknown, fallback = 'Something went wrong') {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { message?: string; error?: { message?: string } } | undefined
-    if (!error.response) return `Cannot reach the local backend at ${API_BASE_URLS.join(' or ')}`
+    if (!error.response) return `Cannot reach the backend at ${API_BASE_URLS.join(' or ')}`
     return data?.message || data?.error?.message || error.message || fallback
   }
   return error instanceof Error ? error.message : fallback
