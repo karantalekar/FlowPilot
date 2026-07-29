@@ -172,7 +172,7 @@ Create plan:
     "yearly": 29990,
     "currency": "INR"
   },
-  "trialDays": 14,
+  "trialDays": 15,
   "features": [
     {
       "key": "team_members",

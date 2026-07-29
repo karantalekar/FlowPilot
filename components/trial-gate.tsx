@@ -35,7 +35,7 @@ export function TrialGate({ children }: { children: React.ReactNode }) {
           <CardHeader className="text-center">
             <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300"><LockKeyhole className="h-7 w-7" /></div>
             <CardTitle>Your free trial has ended</CardTitle>
-            <CardDescription>The seven-day trial is complete. Upgrade the workspace to restore CRM, projects, analytics, AI, and team functionality.</CardDescription>
+            <CardDescription>The 15-day trial is complete. Upgrade the workspace to restore CRM, projects, analytics, AI, and team functionality.</CardDescription>
           </CardHeader>
           <CardContent className="flex justify-center">
             <Link href="/dashboard/billing" className="inline-flex h-9 items-center justify-center rounded-lg bg-primary px-4 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80">View upgrade options</Link>
