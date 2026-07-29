@@ -213,6 +213,7 @@ export const backendApi = {
   payments: () => api.get<ApiEnvelope<any[]>>('/billing/payment-history'),
   createSubscription: (plan: 'pro' | 'business') => api.post<ApiEnvelope<{ keyId: string; subscriptionId: string; name: string; description: string }>>('/billing/create-subscription', { plan }),
   verifyPayment: (input: { razorpay_payment_id: string; razorpay_subscription_id: string; razorpay_signature: string }) => api.post<ApiEnvelope<{ verified: boolean; plan: string }>>('/billing/verify-payment', input),
+  submitUpiPayment: (input: { plan: 'pro' | 'business'; transactionId: string }) => api.post<ApiEnvelope<any>>('/billing/upi-payment', input),
   adminStats: () => api.get<ApiEnvelope<any>>('/admin/stats'),
   adminUsers: () => api.get<ApiEnvelope<any[]>>('/admin/users'),
   adminOrganizations: () => api.get<ApiEnvelope<any[]>>('/admin/organizations'),
