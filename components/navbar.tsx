@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useAppSelector, useAppDispatch } from '@/lib/hooks'
 import { setTheme } from '@/lib/slices/uiSlice'
 import { Bell, Search, Moon, Sun, Command } from 'lucide-react'
@@ -42,6 +43,11 @@ export function Navbar() {
     setCommandOpen(false)
     setQuery('')
     router.push(href)
+  }
+
+  const closeCommand = () => {
+    setCommandOpen(false)
+    setQuery('')
   }
 
   const submitSearch = (event: FormEvent) => {
@@ -178,14 +184,14 @@ export function Navbar() {
             <div className="mt-2 max-h-80 overflow-y-auto">
               {results.length ? (
                 results.map((destination) => (
-                  <button
+                  <Link
                     key={destination.href}
-                    type="button"
-                    onClick={() => navigate(destination.href)}
+                    href={destination.href}
+                    onClick={closeCommand}
                     className="flex w-full items-center rounded-lg px-3 py-2 text-left text-sm hover:bg-muted"
                   >
                     {destination.label}
-                  </button>
+                  </Link>
                 ))
               ) : (
                 <p className="px-3 py-6 text-center text-sm text-muted-foreground">

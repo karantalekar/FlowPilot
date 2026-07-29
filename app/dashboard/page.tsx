@@ -1,11 +1,11 @@
 'use client'
 
 import dynamic from 'next/dynamic'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Clock, FolderKanban, TrendingUp, Users } from 'lucide-react'
 import toast from 'react-hot-toast'
-import { Button } from '@/components/ui/button'
+import { buttonVariants } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { backendApi, getApiError } from '@/lib/api'
 import { useAppSelector } from '@/lib/hooks'
@@ -31,7 +31,6 @@ const ProjectOverviewCharts = dynamic(
 )
 
 export default function DashboardPage() {
-  const router = useRouter()
   const role = useAppSelector(state => state.auth.user?.role)
   const [analytics, setAnalytics] = useState<Record<string, number>>({})
   const [projectStatuses, setProjectStatuses] = useState<Array<{ _id: string; count: number }>>([])
@@ -82,7 +81,7 @@ export default function DashboardPage() {
           </Card>
         </div>
         <ProjectOverviewCharts statuses={projectStatuses} completionRate={analytics.projectCompletionRate || 0} />
-        <Button onClick={() => router.push('/dashboard/projects')}>View Projects</Button>
+        <Link href="/dashboard/projects" className={buttonVariants()}>View Projects</Link>
       </div>
     )
   }
@@ -94,7 +93,7 @@ export default function DashboardPage() {
           <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
           <p className="mt-1 text-muted-foreground">Welcome back! Here&apos;s your business overview</p>
         </div>
-        <Button onClick={() => router.push('/dashboard/projects')}>New Project</Button>
+        <Link href="/dashboard/projects" className={buttonVariants()}>New Project</Link>
       </div>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">

@@ -1,7 +1,7 @@
 'use client'
 
 import { FormEvent, useCallback, useEffect, useState } from 'react'
-import { Copy, MoreVertical, Plus, Shield, Trash2 } from 'lucide-react'
+import { Copy, Mail, MoreVertical, Plus, Shield, Trash2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -24,6 +24,7 @@ export default function TeamPage() {
   const [inviteName, setInviteName] = useState('')
   const [inviteRole, setInviteRole] = useState<EditableRole>('employee')
   const [lastInviteUrl, setLastInviteUrl] = useState('')
+  const [lastInviteRecipient, setLastInviteRecipient] = useState<{ name: string; email: string }>()
   const [inviting, setInviting] = useState(false)
   const [editingMember, setEditingMember] = useState<EditingMember>()
   const [savingMember, setSavingMember] = useState(false)
@@ -40,12 +41,15 @@ export default function TeamPage() {
   const handleInvite = async (event: FormEvent) => {
     event.preventDefault()
     setInviting(true)
+    const invitedName = inviteName.trim()
+    const invitedEmail = inviteEmail.trim()
     try {
-      const result = (await backendApi.inviteMember({ name: inviteName.trim(), email: inviteEmail.trim(), role: inviteRole })).data.data
+      const result = (await backendApi.inviteMember({ name: invitedName, email: invitedEmail, role: inviteRole })).data.data
       setInviteEmail('')
       setInviteName('')
       setShowInviteForm(false)
       setLastInviteUrl(result.emailSent ? '' : result.inviteUrl || '')
+      setLastInviteRecipient(result.emailSent ? undefined : { name: invitedName, email: invitedEmail })
       loadMembers()
       toast.success(result.emailSent ? 'Invitation email sent' : 'Invitation created')
     } catch (error) {
@@ -92,6 +96,9 @@ export default function TeamPage() {
     { key: 'employees', label: 'Employees', description: 'Project and task contributors', members: teamMembers.filter(member => member.role === 'employee') },
   ]
   const selectedGroup = teamGroups.find(group => group.key === activeGroup) || teamGroups[0]
+  const inviteMailtoHref = lastInviteRecipient && lastInviteUrl
+    ? `mailto:${encodeURIComponent(lastInviteRecipient.email)}?subject=${encodeURIComponent('Your FlowPilot invitation')}&body=${encodeURIComponent(`Hi ${lastInviteRecipient.name},\n\nYou have been invited to join FlowPilot. Open this link to accept your invitation:\n\n${lastInviteUrl}\n\nThanks.`)}`
+    : ''
 
   return (
     <div className="space-y-8">
@@ -102,7 +109,7 @@ export default function TeamPage() {
 
       {showInviteForm && <Card className="border-primary/50 bg-primary/5"><CardHeader><CardTitle>Invite Team Member</CardTitle><CardDescription>{currentRole === 'manager' ? 'Managers can invite Employees only.' : 'Invite an Employee, Manager, or Admin.'}</CardDescription></CardHeader><CardContent><form onSubmit={handleInvite} className="grid gap-4 md:grid-cols-3"><input required minLength={2} value={inviteName} onChange={event => setInviteName(event.target.value)} placeholder="Full name" className="rounded-lg border bg-background px-4 py-2"/><input required type="email" value={inviteEmail} onChange={event => setInviteEmail(event.target.value)} placeholder="colleague@example.com" className="rounded-lg border bg-background px-4 py-2"/><select value={inviteRole} onChange={event => setInviteRole(event.target.value as EditableRole)} disabled={currentRole === 'manager'} className="rounded-lg border bg-background px-4 py-2"><option value="employee">Employee</option>{currentRole !== 'manager' && <><option value="manager">Manager</option><option value="admin">Admin</option></>}</select><div className="flex gap-2 md:col-span-3"><Button type="submit" disabled={inviting}>{inviting ? 'Sending...' : 'Send Invite'}</Button><Button type="button" variant="outline" onClick={() => setShowInviteForm(false)}>Cancel</Button></div></form></CardContent></Card>}
 
-      {lastInviteUrl && <Card className="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100"><CardHeader><CardTitle>Invitation link created</CardTitle><CardDescription className="text-amber-800 dark:text-amber-200">Email delivery is unavailable. Copy this link and send it manually.</CardDescription></CardHeader><CardContent><div className="flex flex-col gap-3 sm:flex-row"><input readOnly value={lastInviteUrl} className="min-w-0 flex-1 rounded-lg border bg-background px-4 py-2 text-foreground"/><Button type="button" className="gap-2" onClick={() => { navigator.clipboard.writeText(lastInviteUrl); toast.success('Invite link copied') }}><Copy className="h-4 w-4"/>Copy link</Button></div></CardContent></Card>}
+      {lastInviteUrl && <Card className="border-amber-300 bg-amber-50 text-amber-950 dark:border-amber-800 dark:bg-amber-950/30 dark:text-amber-100"><CardHeader><CardTitle>Invitation link created</CardTitle><CardDescription className="text-amber-800 dark:text-amber-200">Email delivery is unavailable. Send this link from your email app.</CardDescription></CardHeader><CardContent><div className="flex flex-col gap-3 sm:flex-row"><input readOnly value={lastInviteUrl} className="min-w-0 flex-1 rounded-lg border bg-background px-4 py-2 text-foreground"/>{inviteMailtoHref && <a href={inviteMailtoHref} className="inline-flex h-8 shrink-0 items-center justify-center gap-2 rounded-lg bg-primary px-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/80"><Mail className="h-4 w-4"/>Email link</a>}<Button type="button" className="gap-2" onClick={() => { navigator.clipboard.writeText(lastInviteUrl); toast.success('Invite link copied') }}><Copy className="h-4 w-4"/>Copy link</Button></div></CardContent></Card>}
 
       {editingMember && <Card className="border-primary/50"><CardHeader><CardTitle>Edit Team Member</CardTitle><CardDescription>Update this Manager or Employee&apos;s information.</CardDescription></CardHeader><CardContent><form onSubmit={saveMember} className="grid gap-4 md:grid-cols-3"><div className="space-y-2"><label htmlFor="member-name" className="text-sm font-medium">Full name</label><input id="member-name" required minLength={2} value={editingMember.name} onChange={event => setEditingMember({...editingMember, name: event.target.value})} className="w-full rounded-lg border bg-background px-4 py-2"/></div><div className="space-y-2"><label htmlFor="member-email" className="text-sm font-medium">Email</label><input id="member-email" required type="email" value={editingMember.email} onChange={event => setEditingMember({...editingMember, email: event.target.value})} className="w-full rounded-lg border bg-background px-4 py-2"/></div><div className="space-y-2"><label htmlFor="member-role" className="text-sm font-medium">Role</label><select id="member-role" value={editingMember.role} onChange={event => setEditingMember({...editingMember, role: event.target.value as EditableRole})} className="w-full rounded-lg border bg-background px-4 py-2"><option value="employee">Employee</option><option value="manager">Manager</option><option value="admin">Admin</option></select></div><div className="flex flex-wrap gap-2 md:col-span-3"><Button type="submit" disabled={savingMember}>{savingMember ? 'Saving...' : 'Save changes'}</Button><Button type="button" variant="outline" onClick={() => setEditingMember(undefined)}>Cancel</Button><Button type="button" variant="destructive" onClick={() => setRemoveMemberId(editingMember.id)}><Trash2 className="mr-2 h-4 w-4"/>Remove member</Button></div></form></CardContent></Card>}
 
