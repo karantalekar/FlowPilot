@@ -18,9 +18,11 @@ export function Providers({ children }: { children: ReactNode }) {
           toastOptions={{
             duration: 4000,
             style: {
-              background: 'rgb(var(--color-background) / 1)',
-              color: 'rgb(var(--color-foreground) / 1)',
-              border: '1px solid rgb(var(--color-border) / 1)',
+              background: 'var(--popover)',
+              color: 'var(--popover-foreground)',
+              border: '1px solid var(--border)',
+              maxWidth: 'min(420px, calc(100vw - 32px))',
+              overflowWrap: 'anywhere',
             },
           }}
         />

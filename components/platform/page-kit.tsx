@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { ChevronLeft, ChevronRight, Filter, LoaderCircle, MoreHorizontal, Search, ShieldAlert } from 'lucide-react'
 import toast from 'react-hot-toast'
+import { ConfirmDialog } from '@/components/confirm-dialog'
 import { platformConsoleApi, platformApiError } from '@/lib/platform/api'
 
 export type Column = { key: string; label: string; render?: (item: Record<string, any>) => React.ReactNode }
@@ -59,6 +60,7 @@ export function ResourceTable({ resource, columns, statuses = [], actions = [] }
   const [menu, setMenu] = useState<string | null>(null)
   const [version, setVersion] = useState(0)
   const [error, setError] = useState('')
+  const [pendingConfirmation, setPendingConfirmation] = useState<{ action: RowAction; item: Record<string, any> } | null>(null)
   useEffect(() => { const id = setTimeout(() => { setDebounced(search); setPage(1) }, 350); return () => clearTimeout(id) }, [search])
   useEffect(() => {
     let active = true; setLoading(true); setError('')
@@ -67,12 +69,24 @@ export function ResourceTable({ resource, columns, statuses = [], actions = [] }
       .catch(cause => { if (!active) return; const message = platformApiError(cause); setItems([]); setError(message); toast.error(message) }).finally(() => active && setLoading(false))
     return () => { active = false }
   }, [resource, page, debounced, status, version])
-  const run = async (action: RowAction, item: Record<string, any>) => {
-    setMenu(null)
-    if (action.tone === 'danger' && !window.confirm(`Confirm “${action.label}”? This action will be recorded in the audit log.`)) return
-    try { await action.run(item); toast.success(`${action.label} completed`); setVersion(v => v + 1) } catch (error) { toast.error(platformApiError(error)) }
+  const execute = async (action: RowAction, item: Record<string, any>) => {
+    try {
+      await action.run(item)
+      toast.success(`${action.label} completed`)
+      setVersion(v => v + 1)
+    } catch (error) {
+      toast.error(platformApiError(error))
+    }
   }
-  return <section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+  const run = (action: RowAction, item: Record<string, any>) => {
+    setMenu(null)
+    if (action.tone === 'danger') {
+      setPendingConfirmation({ action, item })
+      return
+    }
+    void execute(action, item)
+  }
+  return <><section className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
     <div className="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-slate-800 sm:flex-row">
       <label className="relative flex-1"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder={`Search ${resource.replaceAll('-', ' ')}…`} className="h-10 w-full rounded-xl border border-slate-200 bg-slate-50 pl-10 pr-3 text-sm outline-none focus:border-indigo-400 focus:ring-3 focus:ring-indigo-100 dark:border-slate-700 dark:bg-slate-950 dark:focus:ring-indigo-950" /></label>
       {statuses.length > 0 && <label className="relative"><Filter className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate-400" /><select value={status} onChange={e => { setStatus(e.target.value); setPage(1) }} className="h-10 min-w-44 appearance-none rounded-xl border border-slate-200 bg-white pl-10 pr-8 text-sm dark:border-slate-700 dark:bg-slate-950"><option value="">All statuses</option>{statuses.map(s => <option key={s}>{s}</option>)}</select></label>}
@@ -81,4 +95,16 @@ export function ResourceTable({ resource, columns, statuses = [], actions = [] }
       <tbody className="divide-y divide-slate-100 dark:divide-slate-800">{loading ? <tr><td colSpan={columns.length + 1} className="h-64 text-center"><LoaderCircle className="mx-auto size-6 animate-spin text-indigo-500" /><span className="mt-3 block text-xs text-slate-500">Loading secure platform data…</span></td></tr> : error ? <tr><td colSpan={columns.length + 1} className="h-64 px-6 text-center"><ShieldAlert className="mx-auto size-8 text-rose-400" /><p className="mt-3 text-sm font-medium">Could not load {resource.replaceAll('-', ' ')}</p><p className="mt-1 text-xs text-slate-500">{error}</p><button onClick={() => setVersion(v => v + 1)} className="mt-4 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white">Try again</button></td></tr> : items.length === 0 ? <tr><td colSpan={columns.length + 1} className="h-64 text-center"><ShieldAlert className="mx-auto size-8 text-slate-300" /><p className="mt-3 text-sm font-medium">No records found</p><p className="mt-1 text-xs text-slate-500">Try adjusting your search or filters.</p></td></tr> : items.map((item, index) => <tr key={String(item._id || item.id || index)} className="text-sm hover:bg-slate-50/70 dark:hover:bg-slate-800/40">{columns.map(c => <td key={c.key} className="max-w-xs px-5 py-4 text-slate-600 dark:text-slate-300">{c.render ? c.render(item) : displayValue(valueAt(item, c.key))}</td>)}{actions.length > 0 && <td className="relative px-5 py-4 text-right"><button onClick={() => setMenu(menu === (item._id || item.id) ? null : (item._id || item.id))} className="rounded-lg p-2 hover:bg-slate-100 dark:hover:bg-slate-800"><MoreHorizontal className="size-4" /></button>{menu === (item._id || item.id) && <div className="absolute right-6 top-12 z-20 min-w-44 rounded-xl border border-slate-200 bg-white p-1.5 text-left shadow-xl dark:border-slate-700 dark:bg-slate-800">{actions.filter(a => !a.when || a.when(item)).map(a => <button key={a.label} onClick={() => run(a, item)} className={`block w-full rounded-lg px-3 py-2 text-xs font-medium hover:bg-slate-50 dark:hover:bg-slate-700 ${a.tone === 'danger' ? 'text-rose-600' : a.tone === 'success' ? 'text-emerald-600' : ''}`}>{a.label}</button>)}</div>}</td>}</tr>)}</tbody></table></div>
     <div className="flex items-center justify-between border-t border-slate-200 px-5 py-4 text-xs text-slate-500 dark:border-slate-800"><span>{total.toLocaleString()} records</span><div className="flex items-center gap-2"><button disabled={page <= 1} onClick={() => setPage(p => p - 1)} className="rounded-lg border border-slate-200 p-2 disabled:opacity-30 dark:border-slate-700"><ChevronLeft className="size-3.5" /></button><span>Page {page} of {pages}</span><button disabled={page >= pages} onClick={() => setPage(p => p + 1)} className="rounded-lg border border-slate-200 p-2 disabled:opacity-30 dark:border-slate-700"><ChevronRight className="size-3.5" /></button></div></div>
   </section>
+    <ConfirmDialog
+      open={pendingConfirmation !== null}
+      title={pendingConfirmation?.action.label || 'Confirm action'}
+      description="This action affects platform data and will be recorded in the audit log."
+      confirmLabel={pendingConfirmation?.action.label || 'Confirm'}
+      onOpenChange={open => { if (!open) setPendingConfirmation(null) }}
+      onConfirm={async () => {
+        if (!pendingConfirmation) return
+        await execute(pendingConfirmation.action, pendingConfirmation.item)
+      }}
+    />
+  </>
 }
