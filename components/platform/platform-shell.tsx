@@ -5,7 +5,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import {
-  Activity, BarChart3, Bell, Building2, ChevronDown, CreditCard, FileCheck2,
+  Bell, Building2, ChevronDown, CreditCard, FileCheck2,
   FileText, LayoutDashboard, LogOut, Menu, Moon, PanelLeftClose, PanelLeftOpen,
   Receipt, Search, Settings, Sun, UserCircle, Users, WalletCards, X,
 } from 'lucide-react'
@@ -21,8 +21,6 @@ const nav = [
   { label: 'Payments', href: '/platform/payments', icon: Receipt },
   { label: 'Invoices', href: '/platform/invoices', icon: FileText },
   { label: 'Payment verification', href: '/platform/payment-verification', icon: FileCheck2 },
-  { label: 'Reports & analytics', href: '/platform/reports', icon: BarChart3 },
-  { label: 'Activity logs', href: '/platform/activity-logs', icon: Activity },
   { label: 'Settings', href: '/platform/settings', icon: Settings },
 ]
 

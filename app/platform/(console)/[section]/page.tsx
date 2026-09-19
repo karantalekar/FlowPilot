@@ -1,7 +1,7 @@
 'use client'
 
 import { use, useState } from 'react'
-import { Download, Plus } from 'lucide-react'
+import { Plus } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { Column, date, money, PageHeader, ResourceTable, RowAction, StatusPill } from '@/components/platform/page-kit'
 import { platformConsoleApi, platformApiError, platformSession } from '@/lib/platform/api'
@@ -31,9 +31,6 @@ const configs: Record<string, Config> = {
   invoices: { title: 'Invoices', description: 'Track billing documents and reconcile paid and unpaid balances.', resource: 'invoices', statuses: ['draft', 'issued', 'paid', 'unpaid', 'void'], columns: [
     { key: 'number', label: 'Invoice', render: i => primary(i.number, date(i.createdAt)) }, { key: 'organization.name', label: 'Organization' }, { key: 'total', label: 'Total', render: i => money(i.total) }, { key: 'dueAt', label: 'Due date', render: i => date(i.dueAt) }, { key: 'status', label: 'Status', render: i => <StatusPill value={i.status} /> },
   ] },
-  'activity-logs': { title: 'Activity logs', description: 'Immutable trail of sensitive platform actions and access events.', resource: 'activity-logs', columns: [
-    { key: 'action', label: 'Event', render: i => primary(i.action?.replaceAll('_', ' '), i.entity) }, { key: 'actor.email', label: 'Actor' }, { key: 'ip', label: 'IP address' }, { key: 'createdAt', label: 'Timestamp', render: i => date(i.createdAt) }, { key: 'requestId', label: 'Request ID' },
-  ] },
 }
 
 function PlanDialog({ close }: { close: () => void }) {
@@ -53,7 +50,6 @@ export default function PlatformSectionPage({ params }: { params: Promise<{ sect
     return <><PageHeader title="Profile" description="Your isolated Platform Super Admin identity." /><div className="max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900"><div className="grid size-16 place-items-center rounded-2xl bg-indigo-100 text-xl font-bold text-indigo-700 dark:bg-indigo-950 dark:text-indigo-300">{admin?.name?.split(' ').map(v => v[0]).join('')}</div><h2 className="mt-4 text-xl font-semibold">{admin?.name}</h2><p className="text-sm text-slate-500">{admin?.email}</p><div className="mt-6 rounded-xl bg-slate-50 p-4 text-xs text-slate-500 dark:bg-slate-950">Role: Platform Super Admin · Independent of all organizations</div></div></>
   }
   if (section === 'settings') return <SettingsPage />
-  if (section === 'reports') return <ReportsPage />
   const config = configs[section]
   if (!config) return <><PageHeader title="Module unavailable" description="This platform module is not configured." /></>
   const actions: RowAction[] = []
@@ -79,9 +75,6 @@ export default function PlatformSectionPage({ params }: { params: Promise<{ sect
   return <><PageHeader eyebrow="Platform control" title={config.title} description={config.description} action={section === 'plans' ? <button onClick={() => setPlanOpen(true)} className="flex items-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white"><Plus className="size-4" /> Create plan</button> : undefined} /><ResourceTable resource={config.resource} columns={config.columns} statuses={config.statuses} actions={actions} />{planOpen && <PlanDialog close={() => setPlanOpen(false)} />}</>
 }
 
-function ReportsPage() {
-  return <><PageHeader eyebrow="Business intelligence" title="Reports & analytics" description="Revenue, renewal and subscription trends prepared for export." action={<button onClick={() => window.print()} className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold dark:border-slate-700 dark:bg-slate-900"><Download className="size-4" /> Export report</button>} /><ResourceTable resource="reports" columns={[{ key: '_id.month', label: 'Month' }, { key: '_id.year', label: 'Year' }, { key: 'revenue', label: 'Verified revenue', render: i => money(i.revenue) }, { key: 'payments', label: 'Payments' }]} /></>
-}
 function SettingsPage() {
   const [saving, setSaving] = useState(false)
   const submit = async (data: FormData) => { setSaving(true); try { await platformConsoleApi.setting('platform.general', { supportEmail: data.get('supportEmail'), timezone: data.get('timezone'), maintenanceMode: data.get('maintenanceMode') === 'on' }); toast.success('Platform settings updated') } catch (e) { toast.error(platformApiError(e)) } finally { setSaving(false) } }
